@@ -64,9 +64,9 @@ def generateTweetGIF():
 def generateTeamGIF():
     print(f"\n{bcolors.BOLD}Team GIF Generator{bcolors.ENDC}\n")
     teamList = shtScrp.manualTeamSetup()
-    team1 = teamList[0]
-    team2 = teamList[1]
-    print(f"Team 1 name: {team1[0]}, color: {team1[1]}, Team 2 name: {team2[0]}, color: {team2[1]}")
+
+    imgMagr.createTeamTextImage(teamList, "temp")
+
     
 
 

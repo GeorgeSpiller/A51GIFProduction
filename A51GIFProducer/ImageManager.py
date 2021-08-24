@@ -3,9 +3,12 @@ from textwrap import wrap
 import os
 from colors import bcolors
 
+PALADINS_LOC = os.path.abspath(os.getcwd() + "\\resources\\PALADINS.TTF")
 FONT_USER_INFO = ImageFont.truetype("arial.ttf", 90, encoding="utf-8")
-FONT_TEXT = ImageFont.truetype("arial.ttf", 110, encoding="utf-8")
-IMAGE_OUTPUT_DIR = os.path.abspath(os.getcwd() + "\\TweetsOut")
+TWEET_FONT_TEXT = ImageFont.truetype("arial.ttf", 110, encoding="utf-8")
+TEAM_FONT_TEXT = ImageFont.truetype(PALADINS_LOC, 40, encoding="utf-8")
+TWEET_IMAGE_OUTPUT_DIR = os.path.abspath(os.getcwd() + "\\TweetsOut")
+TEAMTEXT_IMAGE_OUTPUT_DIR = os.path.abspath(os.getcwd() + "\\TeamText")
 GIF_RAW_DIR = os.path.abspath(os.getcwd() + "\\bin")
 WIDTH = 2600
 HEIGHT = 800
@@ -19,16 +22,31 @@ COORD_TAG = (600, 305)
 COORD_TEXT = (250, 510)
 LINE_MARGIN = 15
 
+
+COLOR_TEXT_LIGHT = (220, 220, 220)  # 192
+COLOR_TEXT_DARK = (192, 192, 192)
+
 user_name = "Arena 51 Gaming"
 user_tag = "@Arena_51_Gaming"
+
+
+def get_text_dimensions(text_string, font):
+    # https://stackoverflow.com/a/46220683/9263761
+    ascent, descent = font.getmetrics()
+
+    text_width = font.getmask(text_string).getbbox()[2]
+    text_height = font.getmask(text_string).getbbox()[3] + descent
+
+    return (text_width, text_height)
+
 
 def createTweetImage(tweetBody, imageName):
     # create output dir 
     try:
-        if not os.path.exists(IMAGE_OUTPUT_DIR):
-            os.makedirs(IMAGE_OUTPUT_DIR)
+        if not os.path.exists(TWEET_IMAGE_OUTPUT_DIR):
+            os.makedirs( TWEET_IMAGE_OUTPUT_DIR)
     except OSError as e:
-        print(f"{bcolors.FAIL}Could not create output directory at: \n{IMAGE_OUTPUT_DIR}{bcolors.ENDC}")
+        print(f"{bcolors.FAIL}Could not create output directory at: \n{TWEET_IMAGE_OUTPUT_DIR}{bcolors.ENDC}")
         print(e)
         exit()
     # Setup of variables and calculations
@@ -52,7 +70,7 @@ def createTweetImage(tweetBody, imageName):
     # Loop through each line of text, and extract the height needed to draw it,\
     # using our font settings
     line_height = [
-        temp_img_draw_interf.textsize(text_string_lines[i], font=FONT_TEXT)[1]
+        temp_img_draw_interf.textsize(text_string_lines[i], font=TWEET_FONT_TEXT)[1]
         for i in range(len(text_string_lines))
     ]
 
@@ -72,7 +90,7 @@ def createTweetImage(tweetBody, imageName):
     # y position, along with a small margin
     for index, line in enumerate(text_string_lines):
         # Draw a line of text
-        draw_interf.text((x, y), line, font=FONT_TEXT, fill=COLOR_TEXT)
+        draw_interf.text((x, y), line, font=TWEET_FONT_TEXT, fill=COLOR_TEXT)
         # Increment y to draw the next line at the adequate height
         y += line_height[index] + LINE_MARGIN
 
@@ -84,7 +102,32 @@ def createTweetImage(tweetBody, imageName):
     img.paste(user_photo, COORD_PHOTO, mask=user_photo)
 
     # Finally, save the created image
-    img.save(f'{IMAGE_OUTPUT_DIR}\\{imageName}.png')
+    img.save(f'{ TWEET_IMAGE_OUTPUT_DIR}\\{imageName}.png')
+
+
+def createTeamTextImage(teamTextList, imageName):
+    try:
+        if not os.path.exists(TEAMTEXT_IMAGE_OUTPUT_DIR):
+            os.makedirs(TEAMTEXT_IMAGE_OUTPUT_DIR)
+    except OSError as e:
+        print(f"{bcolors.FAIL}Could not create output directory at: \n{TEAMTEXT_IMAGE_OUTPUT_DIR}{bcolors.ENDC}")
+        print(e)
+        exit()
+    pass
+
+    fullTextString = teamTextList[0][0] + " vs  " + teamTextList[1][0]
+    padding = 3
+    w, h = get_text_dimensions(fullTextString, TEAM_FONT_TEXT)
+    team1w, _ = get_text_dimensions(teamTextList[0][0], TEAM_FONT_TEXT)
+    vsw, _ = get_text_dimensions(" vs ", TEAM_FONT_TEXT)
+
+    TeamTextImg = Image.new('RGB', (w+padding, h+padding), color='white')
+    draw_interf = ImageDraw.Draw(TeamTextImg)
+    draw_interf.text((0, 0), teamTextList[0][0], font=TEAM_FONT_TEXT, fill=teamTextList[0][1])
+    draw_interf.text((team1w, 0), " vs", font=TEAM_FONT_TEXT, fill=(220,220,220))
+    draw_interf.text((team1w + vsw, 0), " " + teamTextList[1][0], font=TEAM_FONT_TEXT, fill=teamTextList[1][1])
+
+    TeamTextImg.save(f'{TEAMTEXT_IMAGE_OUTPUT_DIR}\\{imageName}.png')
 
 
 def ExportGif(imgList,duration, name="OUT"):
@@ -105,7 +148,7 @@ def ExportGif(imgList,duration, name="OUT"):
 
 def clearOutputDir():
     complete = True
-    dir_name = os.path.abspath(os.getcwd() + "\\" + IMAGE_OUTPUT_DIR)
+    dir_name = os.path.abspath(os.getcwd() + "\\" +  TWEET_IMAGE_OUTPUT_DIR)
     if os.path.exists(dir_name) and os.path.isdir(dir_name):
         if not os.listdir(dir_name):
             # DIR is empty
@@ -126,7 +169,7 @@ def clearOutputDir():
         # DIR does not exist
         pass
     if complete:
-        print(f"{bcolors.OKGREEN}Output Dir {IMAGE_OUTPUT_DIR} ready.{bcolors.ENDC}")
+        print(f"{bcolors.OKGREEN}Output Dir { TWEET_IMAGE_OUTPUT_DIR} ready.{bcolors.ENDC}")
     else:
         print(f"{bcolors.FAIL}This python script could not delete the pre-existing files in the directory: \n\t{dir_name}\nPlease navigate to that directory, delete all .png files, and re-run this script.{bcolors.ENDC}")
         exit()
