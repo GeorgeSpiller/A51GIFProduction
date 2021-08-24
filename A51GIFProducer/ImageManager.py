@@ -19,7 +19,6 @@ COORD_TAG = (600, 305)
 COORD_TEXT = (250, 510)
 LINE_MARGIN = 15
 
-# Information for the image
 user_name = "Arena 51 Gaming"
 user_tag = "@Arena_51_Gaming"
 
@@ -86,11 +85,6 @@ def createTweetImage(tweetBody, imageName):
 
     # Finally, save the created image
     img.save(f'{IMAGE_OUTPUT_DIR}\\{imageName}.png')
-
-
-def getTextLength(inputString):
-    # Return the length (in px) of a string of text when it i displayed on the canvas
-    pass
 
 
 def ExportGif(imgList,duration, name="OUT"):
