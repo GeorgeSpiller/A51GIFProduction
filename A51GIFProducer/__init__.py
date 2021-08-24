@@ -1,6 +1,7 @@
 import assemble_tweets as astwt
 import TwitterScraper as twtScrp
 import ImageManager as imgMagr
+import SheetsScrapper as shtScrp
 from colors import bcolors
 import colorama
 colorama.init()
@@ -62,10 +63,19 @@ def generateTweetGIF():
 
 def generateTeamGIF():
     print(f"\n{bcolors.BOLD}Team GIF Generator{bcolors.ENDC}\n")
-    pass
+    teamList = shtScrp.manualTeamSetup()
+    team1 = teamList[0]
+    team2 = teamList[1]
+    print(f"Team 1 name: {team1[0]}, color: {team1[1]}, Team 2 name: {team2[0]}, color: {team2[1]}")
+    
 
 
 if __name__ == "__main__":
+    # tmp line for testing
+    generateTeamGIF()
+    #-------------------
+
+
     print(f"\n{bcolors.BOLD}A51 GIF Producer.{bcolors.ENDC}")
     userInputString = input("Which gif would you like to generate (tweet/team): ").lower()
     if ("tw" in userInputString):

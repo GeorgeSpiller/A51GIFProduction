@@ -88,6 +88,11 @@ def createTweetImage(tweetBody, imageName):
     img.save(f'{IMAGE_OUTPUT_DIR}\\{imageName}.png')
 
 
+def getTextLength(inputString):
+    # Return the length (in px) of a string of text when it i displayed on the canvas
+    pass
+
+
 def ExportGif(imgList,duration, name="OUT"):
     print(" Exporting GIF...", end='\r')
     if imgList == None:
