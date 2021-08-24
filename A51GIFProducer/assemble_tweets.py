@@ -1,14 +1,14 @@
-from ImageManager import createTweetImage
+from ImageManager import createTweetImage, ExportGif
 from PIL import Image
 import os
 import time
 from colors import bcolors
 
 TWEET_SCREENSHOT_DIR = os.path.abspath(os.getcwd() + "\\TweetsOut")
-GIF_RAW_DIR = os.path.abspath(os.getcwd() + "\\bin")
 TWEET_SIZE = (800, 800)
 CANVAS_SIZE = (1920, 1080)
 Y_START_VALUE = 80
+GIF_RAW_DIR = os.path.abspath(os.getcwd() + "\\bin")
 
 def generateTweetImages():
     # generate indevidual tweet images
@@ -125,22 +125,6 @@ def SliderAnimation(speed, tweets, saveImages=False):
     print()
     print(f"{bcolors.OKGREEN}Done! {bcolors.ENDC}{nameItter}")
     return imageSequnce
-    
-
-def ExportGif(imgList,duration, name="OUT"):
-    print(" Exporting GIF...", end='\r')
-    if imgList == None:
-        images = []
-        for file in os.listdir(GIF_RAW_DIR):
-            filename = os.fsdecode(file)
-            if filename.endswith(".png"): 
-                imagePath = os.path.join(GIF_RAW_DIR, filename)
-                images.append(Image.open(imagePath, "r"))
-    else:
-        images = imgList
-    images[0].save(f'{name}.gif',
-               save_all=True, append_images=images[1:], optimize=True, loop=0, duration=duration)
-    print(f"{bcolors.OKGREEN}GIF Exported as {name}.gif{bcolors.ENDC}")
     
 
 

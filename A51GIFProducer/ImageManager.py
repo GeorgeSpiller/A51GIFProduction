@@ -6,6 +6,7 @@ from colors import bcolors
 FONT_USER_INFO = ImageFont.truetype("arial.ttf", 90, encoding="utf-8")
 FONT_TEXT = ImageFont.truetype("arial.ttf", 110, encoding="utf-8")
 IMAGE_OUTPUT_DIR = os.path.abspath(os.getcwd() + "\\TweetsOut")
+GIF_RAW_DIR = os.path.abspath(os.getcwd() + "\\bin")
 WIDTH = 2600
 HEIGHT = 800
 COLOR_BG = 'white'
@@ -86,6 +87,22 @@ def createTweetImage(tweetBody, imageName):
     # Finally, save the created image
     img.save(f'{IMAGE_OUTPUT_DIR}\\{imageName}.png')
 
+
+def ExportGif(imgList,duration, name="OUT"):
+    print(" Exporting GIF...", end='\r')
+    if imgList == None:
+        images = []
+        for file in os.listdir(GIF_RAW_DIR):
+            filename = os.fsdecode(file)
+            if filename.endswith(".png"): 
+                imagePath = os.path.join(GIF_RAW_DIR, filename)
+                images.append(Image.open(imagePath, "r"))
+    else:
+        images = imgList
+    images[0].save(f'{name}.gif',
+               save_all=True, append_images=images[1:], optimize=True, loop=0, duration=duration)
+    print(f"{bcolors.OKGREEN}GIF Exported as {name}.gif{bcolors.ENDC}")
+    
 
 def clearOutputDir():
     complete = True
