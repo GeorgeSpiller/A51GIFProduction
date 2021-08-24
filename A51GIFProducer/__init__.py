@@ -2,6 +2,7 @@ import assemble_tweets as astwt
 import TwitterScraper as twtScrp
 import ImageManager as imgMagr
 import SheetsScrapper as shtScrp
+import assemble_teams as asteam
 from colors import bcolors
 import colorama
 colorama.init()
@@ -67,7 +68,8 @@ def generateTeamGIF():
 
     imgMagr.createTeamTextImage(teamList, "temp")
 
-    
+    asteam.RotatedSliderAnimation(0, teamList)
+
 
 
 if __name__ == "__main__":

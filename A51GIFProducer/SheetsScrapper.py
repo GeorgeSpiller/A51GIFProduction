@@ -12,6 +12,8 @@ COLOR_DICT = {
 
 
 def manualTeamSetup():
+    # tmp line for dev
+    return [("Mighty Blues", (153, 204, 255)), ("Pink Panthers", (255, 153, 204))]
 
     team1_name = input("Team1 name: ")
     team1_color = input("Team1 color: ").upper().strip()

@@ -8,7 +8,7 @@ FONT_USER_INFO = ImageFont.truetype("arial.ttf", 90, encoding="utf-8")
 TWEET_FONT_TEXT = ImageFont.truetype("arial.ttf", 110, encoding="utf-8")
 TEAM_FONT_TEXT = ImageFont.truetype(PALADINS_LOC, 40, encoding="utf-8")
 TWEET_IMAGE_OUTPUT_DIR = os.path.abspath(os.getcwd() + "\\TweetsOut")
-TEAMTEXT_IMAGE_OUTPUT_DIR = os.path.abspath(os.getcwd() + "\\TeamText")
+TEAMTEXT_IMAGE_OUTPUT_DIR = os.path.abspath(os.getcwd() + "\\TeamTextOut")
 GIF_RAW_DIR = os.path.abspath(os.getcwd() + "\\bin")
 WIDTH = 2600
 HEIGHT = 800
