@@ -2,36 +2,64 @@ from ImageManager import  createTeamTextImage, ExportGif
 from PIL import Image, ImageDraw, ImageFont
 import os
 from colors import bcolors
+from math import sqrt
 
 CANVAS_SIZE = (1920, 1080)
 RESOURCE_DIR = os.path.abspath(os.getcwd() + "\\resources")
 TEAMTEXT_DIR = os.path.abspath(os.getcwd() + "\\TeamTextOut")
 
 
+def util_reletiveToAbsCords(cords, teamTextImage):
+    return (cords[0], cords[1] - teamTextImage.size[1])
+
+
+def util_drawLine(startCoords, main, teamTextImage):
+    teamText_start = startCoords
+    teamText_end = [teamText_start[0] + teamTextImage.size[0], teamText_start[1] - teamTextImage.size[1]]
+
+    while teamText_start[0] < CANVAS_SIZE[0] and teamText_start[1] < CANVAS_SIZE[1]:
+        if teamText_end[0] < 0 and teamText_end[1] < 0:
+            continue
+        pasteCords = util_reletiveToAbsCords(teamText_start, teamTextImage)
+        main.paste(teamTextImage, pasteCords, mask=teamTextImage)
+        # move the start to the next location
+        teamText_start = teamText_end
+        teamText_end = [teamText_start[0] + teamTextImage.size[0], teamText_start[1] - teamTextImage.size[1]]
+    return main, teamTextImage
+
+
 def RotatedSliderAnimation(speed, teamList, saveImages=False):
-    # starting from 0,0:
-    # draw text image on canvas, rotated starting at 0,0
-    # if the image furthest end pos not on canvas skip to next line until start pos not on canvas
+
+    ROTATION = 45
+    SPACING_VERTICAL = 80
+    ALPHA = 0
+
     main = Image.new('RGB', (1920,1080), color='white')
-    tmp = Image.open(f"{TEAMTEXT_DIR}\\temp.png", "r")
+    rawRGB = Image.open(f"{TEAMTEXT_DIR}\\temp.png", "r")
+    teamTextImage = rawRGB.convert("RGBA")
+    # rotate teamTextImage
+    teamTextImage = teamTextImage.rotate(ROTATION, expand=1)
+    # Make any black pixels transparent
+    newImage = []
+    for item in teamTextImage.getdata():
+        if item[:3] == (0, 0, 0):
+            newImage.append((0, 0, 0, 0))
+        else:
+            newImage.append(item)
+    teamTextImage.putdata(newImage)
 
-    # refactor so they image does not need to be saved (image obj as param)
-    # https://stackoverflow.com/questions/5252170/specify-image-filling-color-when-rotating-in-python-with-pil-and-setting-expand
+    currPos = [0, 0] 
+    #xFlip = True
+    cPos_x1 = 0
+    cPos_x2 = 0
+    while currPos[1] <= CANVAS_SIZE[1]*2:
+        #if xFlip:
+        #    oldCurrPos = currPos
+        #    currPos[0] -= (sqrt(teamTextImage.size[0]**2 + teamTextImage.size[1]**2))//2
+        main, teamTextImage = util_drawLine(currPos, main, teamTextImage)
+        currPos[1] += SPACING_VERTICAL
+        print(currPos)
 
-
-    teamTextImage = tmp.rotate(45)
-
-    currPosRow = [500, 500]
-    currPosLine = currPosRow
-    print(f"row:{currPosRow}, line: {currPosLine}")
-    for i in range(10):
-        currPosLine = currPosRow
-        # draw a line
-        while currPosLine[0] < CANVAS_SIZE[0] and currPosLine[1] < CANVAS_SIZE[1]:
-            main.paste(teamTextImage, (currPosLine[0], currPosLine[1]))
-            print(f"row:{currPosRow}, line: {currPosLine}")
-            currPosLine[0] += teamTextImage.size[0]
-        currPosRow[1] += teamTextImage.size[1]
     print(f"Saved as {os.getcwd()}\\TeamTextOut.png")
     main.save(os.getcwd() + "\\TeamTextOut.png")
     
